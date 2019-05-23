@@ -8,7 +8,6 @@ void data_plots(){
 
      float pt_muon_cut=9.,pt_jet_cut=5.;
 	TChain *ch1 = new TChain("mytree");
-
         ch1->Add("/afs/cern.ch/work/v/vbelis/private/Inclusive_bPurity_data/data_*04*.root");
         TH1F * Hdata_pt_rel = new TH1F("Hdata_pt_rel","p_{T}^{rel}(muon) from BParking dataset;p_{T}^{rel} [GeV];",60,0.,6.5);
         TH1F * Hdata_pt_rel_no_dif = new TH1F("Hdata_pt_rel_no_dif","p_{T}^{rel}(muon) (no dif) from BParking dataset ;p_{T}^{rel} [GeV];",60,0.,6.5);
@@ -61,7 +60,7 @@ void data_plots(){
 
 
 
-	TFile * data_output = new TFile("TESSSST_data_output_plots.root","recreate");
+	TFile * data_output = new TFile("data_output_plots.root","recreate");
         Hdata_muon_pt->Write();
         Hdata_muon_pt_norm->Write();
         Hdata_jet_pt->Write();

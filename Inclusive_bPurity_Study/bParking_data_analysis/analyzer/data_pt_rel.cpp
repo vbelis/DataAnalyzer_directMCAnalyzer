@@ -5,7 +5,7 @@
 //#include "DataFormats/JetReco/interface/PFJet.h"
 void data_analysis(){
 
-   float mu_pt_cut=5., mu_eta_cut=1.5;
+   float mu_pt_cut=9., mu_eta_cut=1.5;
    float jet_pt_cut=5., jet_eta_cut=2.1;  
 
    TChain *c_data = new TChain("demo/mytree");
