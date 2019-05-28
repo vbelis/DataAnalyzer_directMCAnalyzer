@@ -1,0 +1,6 @@
+
+Created on 28.05.19. The MINIAOD TriggerAnalyzer package gives output to the sample which is read from das, currently inclusive QCD Mu_EnritchedPt5 samples for pT_hat in [15,300].
+
+In the new approach the TriggerAnalyzer, matches pat::Jet's and pat::Muon's (reco lvl) to their corresponding gen-candidates. Thus, flavour-tagging(not yet done), reco-gen matching and pT_rel calculation(not yet done) is simultaneously in TriggerAnalyzer.cc.
+
+The plotter placed in this folder just creates histograms and comparison plots for the events stored in the TriggerAnalyzer output file.
