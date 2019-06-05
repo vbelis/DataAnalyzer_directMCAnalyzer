@@ -1,5 +1,0 @@
-
-void output_plotter(){
-
-
-}
