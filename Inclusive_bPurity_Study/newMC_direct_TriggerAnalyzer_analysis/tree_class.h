@@ -45,8 +45,12 @@ public :
    Double_t        met_pt;
    Double_t        met_phi;
    /////for data////
-   vector<float>   *good_muon_pt;
-   vector<float>   *good_jet_pt;
+   vector<float>  *good_muon_pt;
+   vector<float>  *good_muon_eta;
+   vector<float>  *good_muon_phi;
+   vector<float>  *good_jet_pt;
+   vector<float>  *good_jet_eta;
+   vector<float>  *good_jet_phi;
    /////////////////
    
    Int_t           nmuon;
@@ -456,8 +460,12 @@ public :
    TBranch *b_no_04_good_jet_phi;
    TBranch *b_no_04_muon_jet_pt_ratio;
    TBranch *b_no_04_muon_jet_deltaR;
-   TBranch        *b_good_muon_pt;
-   TBranch        *b_good_jet_pt;
+   TBranch  *b_good_muon_pt;
+   TBranch  *b_good_muon_eta;
+   TBranch  *b_good_muon_phi;
+   TBranch  *b_good_jet_pt;
+   TBranch  *b_good_jet_eta;
+   TBranch  *b_good_jet_phi;
    TBranch        *b_event;   //!
    TBranch        *b_run_number;   //!
    TBranch        *b_ls;   //!
@@ -920,15 +928,19 @@ void tree_class::Init(TTree *tree,TString part)
 
    // Set object pointer
    good_muon_pt = nullptr;
+   good_muon_eta = nullptr;
+   good_muon_phi = nullptr;
    good_jet_pt = nullptr;
-   b_no_04_good_muon_pt  = nullptr;
-   b_no_04_good_muon_eta = nullptr;
-   b_no_04_good_muon_phi = nullptr;
-   b_no_04_good_jet_pt   = nullptr;
-   b_no_04_good_jet_eta  = nullptr;
-   b_no_04_good_jet_phi  = nullptr;
-   b_no_04_muon_jet_pt_ratio = nullptr;
-   b_no_04_muon_jet_deltaR = nullptr;
+   good_jet_eta = nullptr;
+   good_jet_phi = nullptr;
+   no_04_good_muon_pt  = nullptr;
+   no_04_good_muon_eta = nullptr;
+   no_04_good_muon_phi = nullptr;
+   no_04_good_jet_pt   = nullptr;
+   no_04_good_jet_eta  = nullptr;
+   no_04_good_jet_phi  = nullptr;
+   no_04_muon_jet_pt_ratio = nullptr;
+   no_04_muon_jet_deltaR = nullptr;
    muon_pt = 0;
    muon_eta = 0;
    muon_phi = 0;
@@ -1307,7 +1319,11 @@ void tree_class::Init(TTree *tree,TString part)
    fChain->SetBranchAddress("b_no_04_muon_jet_deltaR",&b_no_04_muon_jet_deltaR);
 
    fChain->SetBranchAddress("good_muon_pt",&good_muon_pt,&b_good_muon_pt);
+   fChain->SetBranchAddress("good_muon_eta",&good_muon_eta,&b_good_muon_eta);
+   fChain->SetBranchAddress("good_muon_phi",&good_muon_phi,&b_good_muon_phi);
    fChain->SetBranchAddress("good_jet_pt",&good_jet_pt,&b_good_jet_pt);
+   fChain->SetBranchAddress("good_jet_eta",&good_jet_eta,&b_good_jet_eta);
+   fChain->SetBranchAddress("good_jet_phi",&good_jet_phi,&b_good_jet_phi);
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("run_number", &run_number, &b_run_number);
    fChain->SetBranchAddress("ls", &ls, &b_ls);
@@ -1720,7 +1736,9 @@ void tree_class::Init(TTree *tree,TString part)
    if (part.Contains("MUON"))  fChain->SetBranchStatus("muon_*",1);
    if (part.Contains("JET"))  fChain->SetBranchStatus("jet_*",1);
    if (part.Contains("ELECTRON"))  fChain->SetBranchStatus("el_*",1);
-   if (part.Contains("ALL")) fChain->SetBranchStatus("*",1);
+
+   if (part.Contains("DATA")) fChain->SetBranchStatus("*good*",1);
+
    if (part.Contains("NO_VERT")) fChain->SetBranchStatus("*_vertex_*",0);
    if (part.Contains("L1"))  fChain->SetBranchStatus("l1*",1);
    if (part.Contains("TRACK"))  fChain->SetBranchStatus("*track*",1);
