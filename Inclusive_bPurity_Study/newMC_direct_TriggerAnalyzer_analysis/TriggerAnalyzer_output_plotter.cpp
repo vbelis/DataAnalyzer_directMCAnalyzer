@@ -18,12 +18,11 @@ void plotter(){
 
      tree_class MC;
      MC.Init(mc_chain,"JET_MUON");
-             
-     TH1F *Hdata_jet_pt = new TH1F("Hdata_jet_pt","Data inclusive p_{T}^{jet};p_{T}^{jet};entries/bin",70,jet_pt_cut,300.);
+     TH1F *Hdata_jet_pt = new TH1F("Hdata_jet_pt","Data inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
      Hdata_jet_pt->SetLineColor(kRed);
      Hdata_jet_pt->SetLineWidth(2);
 
-     TH1F *Hmc_jet_pt = new TH1F("Hmc_jet_pt","MC inclusive p_{T}^{jet};p_{T}^{jet};entries/bin",70,jet_pt_cut,300.);
+     TH1F *Hmc_jet_pt = new TH1F("Hmc_jet_pt","MC inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
      Hmc_jet_pt->SetLineWidth(2);
      
      TH1F *Hmc_deltaR_jet_mu = new TH1F("#DeltaR(jet,#mu) MC",";#DeltaR(jet,#mu);",50,0.,0.4);
@@ -44,11 +43,11 @@ void plotter(){
      Hdata_ratioPT_mu_jet->SetLineWidth(2);
      Hdata_ratioPT_mu_jet->SetLineColor(kRed);
 
-     TH1F *HdeltaR_outOf04Cone_mc = new TH1F("deltaR(jet,mu)_mc",";#Delta R(jet,#mu);",50,0.4,3.5); 
-     HdeltaR_outOf04Cone_mc->SetLineWidth(2);
-     TH1F *HdeltaR_outOf04Cone_data = new TH1F("deltaR(jet,mu)_data",";#Delta R(jet,#mu);",50,0.4,3.5); 
-     HdeltaR_outOf04Cone_data->SetLineWidth(2);
-     HdeltaR_outOf04Cone_data->SetLineColor(kRed);
+//     TH1F *HdeltaR_outOf04Cone_mc = new TH1F("deltaR(jet,mu)_mc",";#Delta R(jet,#mu);",50,0.4,3.5); 
+//     HdeltaR_outOf04Cone_mc->SetLineWidth(2);
+//     TH1F *HdeltaR_outOf04Cone_data = new TH1F("deltaR(jet,mu)_data",";#Delta R(jet,#mu);",50,0.4,3.5); 
+//     HdeltaR_outOf04Cone_data->SetLineWidth(2);
+//     HdeltaR_outOf04Cone_data->SetLineColor(kRed);
 
      cout<<"Analyzing "<<nentries<<" MC events"<<endl;
      for(int ievent=0;ievent<nentries;++ievent){
@@ -108,13 +107,13 @@ void plotter(){
                        }
              else{ 
 		         ++nJets_offCone_mc; 
-                         if(current_input_file.std::string::find("30to50") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_30to50);
-                         else if(current_input_file.std::string::find("50to80") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_50to80);
-                         else if(current_input_file.std::string::find("80to120") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_80to120);
-                         else if(current_input_file.std::string::find("120to170") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_120to170);
-                         else if(current_input_file.std::string::find("170to300") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_170to300);
-                         else if(current_input_file.std::string::find("15to20") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_15to20);	 
-                         else if(current_input_file.std::string::find("20to30") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_20to30);
+//                         if(current_input_file.std::string::find("30to50") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_30to50);
+//                         else if(current_input_file.std::string::find("50to80") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_50to80);
+//                         else if(current_input_file.std::string::find("80to120") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_80to120);
+//                         else if(current_input_file.std::string::find("120to170") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_120to170);
+//                         else if(current_input_file.std::string::find("170to300") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_170to300);
+//                         else if(current_input_file.std::string::find("15to20") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_15to20);	 
+//                         else if(current_input_file.std::string::find("20to30") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_20to30);
 	          }
                                                }
 
@@ -157,12 +156,12 @@ void plotter(){
      Hmc_data_divide->GetYaxis()->SetTitle("MC/Data");
      Hmc_data_divide->Draw("E");
 
-     TCanvas *deltaR_outOf04Cone_canvas = new TCanvas("deltaR_outOf04Cone_canvas","deltaR_outOf04Cone_canvas");
-     HdeltaR_outOf04Cone_data->Scale(1/HdeltaR_outOf04Cone_data->Integral("width"));
-     HdeltaR_outOf04Cone_mc->Scale(1/HdeltaR_outOf04Cone_mc->Integral("width"));
-     HdeltaR_outOf04Cone_data->Draw("hist,E");
-     HdeltaR_outOf04Cone_mc->Draw("hist,E,sames");
-     deltaR_outOf04Cone_canvas->BuildLegend(); 
+//     TCanvas *deltaR_outOf04Cone_canvas = new TCanvas("deltaR_outOf04Cone_canvas","deltaR_outOf04Cone_canvas");
+//     HdeltaR_outOf04Cone_data->Scale(1/HdeltaR_outOf04Cone_data->Integral("width"));
+//     HdeltaR_outOf04Cone_mc->Scale(1/HdeltaR_outOf04Cone_mc->Integral("width"));
+//     HdeltaR_outOf04Cone_data->Draw("hist,E");
+//     HdeltaR_outOf04Cone_mc->Draw("hist,E,sames");
+//     deltaR_outOf04Cone_canvas->BuildLegend(); 
 
      TCanvas *pT_jet_mu_ratio_canvas = new TCanvas("pT_jet_mu_ratio_canvas","pT_jet_mu_ratio_canvas");
      Hdata_ratioPT_mu_jet->Scale(1/Hdata_ratioPT_mu_jet->Integral("width"));
@@ -188,7 +187,7 @@ void plotter(){
      TFile *output_file = new TFile("data_vs_mc_plots.root","recreate");
      mc_vs_data_jet_canvas->Write();
      deltaR_canvas->Write();
-     deltaR_outOf04Cone_canvas->Write();
+//     deltaR_outOf04Cone_canvas->Write();
      deltaR_no04_canvas->Write();
      pT_jet_mu_ratio_canvas->Write();
 
