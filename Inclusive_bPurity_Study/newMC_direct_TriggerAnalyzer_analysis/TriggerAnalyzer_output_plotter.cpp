@@ -32,9 +32,9 @@ void plotter(){
      Hdata_deltaR_jet_mu->SetLineWidth(2);
      Hdata_deltaR_jet_mu->SetLineColor(kRed);
 
-     TH1F *Hmc_deltaR_no04_jet_mu = new TH1F("#DeltaR(jet,#mu) MC",";#DeltaR(jet,#mu);",50,0.,4);
+     TH1F *Hmc_deltaR_no04_jet_mu = new TH1F("#DeltaR(jet,#mu)_no04 MC",";#DeltaR(jet,#mu);",50,0.,4);
      Hmc_deltaR_no04_jet_mu->SetLineWidth(2);
-     TH1F *Hdata_deltaR_no04_jet_mu = new TH1F("#DeltaR(jet,#mu) DATA",";#DeltaR(jet,#mu);",50,0.,4);
+     TH1F *Hdata_deltaR_no04_jet_mu = new TH1F("#DeltaR(jet,#mu)_no04 DATA",";#DeltaR(jet,#mu);",50,0.,4);
      Hdata_deltaR_no04_jet_mu->SetLineWidth(2);
      Hdata_deltaR_no04_jet_mu->SetLineColor(kRed);
 
@@ -189,13 +189,6 @@ void plotter(){
 //     HdeltaR_outOf04Cone_mc->Draw("hist,E,sames");
 //     deltaR_outOf04Cone_canvas->BuildLegend(); 
 
-     TCanvas *pT_jet_mu_ratio_canvas = new TCanvas("pT_jet_mu_ratio_canvas","pT_jet_mu_ratio_canvas");
-     Hdata_ratioPT_mu_jet->Scale(1/Hdata_ratioPT_mu_jet->Integral("width"));
-     Hmc_ratioPT_mu_jet->Scale(1/Hmc_ratioPT_mu_jet->Integral("width"));
-     Hdata_ratioPT_mu_jet->Draw("hist,E");
-     Hmc_ratioPT_mu_jet->Draw("hist,E,sames");
-     pT_jet_mu_ratio_canvas->BuildLegend();
-
      TCanvas *deltaR_canvas = new TCanvas("deltaR_canvas","deltaR_canvas");
      Hdata_deltaR_jet_mu->Scale(1/Hdata_deltaR_jet_mu->Integral("width"));
      Hmc_deltaR_jet_mu->Scale(1/Hmc_deltaR_jet_mu->Integral("width"));
@@ -209,36 +202,74 @@ void plotter(){
      Hdata_deltaR_no04_jet_mu->Draw("hist,E");
      Hmc_deltaR_no04_jet_mu->Draw("hist,E,sames");
      deltaR_no04_canvas->BuildLegend();
+     
+     TCanvas *pT_jet_mu_ratio_canvas = new TCanvas("pT_jet_mu_ratio_canvas","pT_jet_mu_ratio_canvas");
+     Hdata_ratioPT_mu_jet->Scale(1/Hdata_ratioPT_mu_jet->Integral("width"));
+     Hdata_ratioPT_mu_jet->SetStats(0);
+     Hmc_ratioPT_mu_jet->Scale(1/Hmc_ratioPT_mu_jet->Integral("width"));
+     Hmc_ratioPT_mu_jet->SetStats(0);
 
-     TCanvas *pT_jet_mu15_ratio_canvas = new TCanvas("pT_jet_mu15_ratio_canvas","pT_jet_mu15_ratio_canvas");
-     Hdata_ratioPT_mu15_jet->Scale(1/Hdata_ratioPT_mu15_jet->Integral("width"));
-     Hmc_ratioPT_mu15_jet->Scale(1/Hmc_ratioPT_mu15_jet->Integral("width"));
 //******** TO be made a class for fancy plots
-     TRatioPlot *pT_jet_mu15_ratio_plot = new TRatioPlot(Hmc_ratioPT_mu15_jet,Hdata_ratioPT_mu15_jet,"divsym");
+     TRatioPlot *pT_jet_mu_ratio_plot = new TRatioPlot(Hmc_ratioPT_mu_jet,Hdata_ratioPT_mu_jet,"divsym");
      float margin=0.01;
-     pT_jet_mu15_ratio_plot->SetSeparationMargin(margin);
-     pT_jet_mu15_ratio_plot->Draw();
+     pT_jet_mu_ratio_plot->SetSeparationMargin(margin);
+     pT_jet_mu_ratio_plot->SetH1DrawOpt("hist,E");
+     pT_jet_mu_ratio_plot->SetH2DrawOpt("hist,E");
+     pT_jet_mu_ratio_plot->Draw();
 
-     TGraph& lowerGraph = *pT_jet_mu15_ratio_plot->GetLowerRefGraph();
-     lowerGraph.SetMarkerStyle(20);
-     lowerGraph.SetMarkerColor(kBlack);
-     lowerGraph.SetLineColor(kBlack);
+     TGraph* lowerGraph = pT_jet_mu_ratio_plot->GetLowerRefGraph();
+     lowerGraph->SetMarkerStyle(20);
+     lowerGraph->SetMarkerColor(kBlack);
+     lowerGraph->SetLineColor(kBlack);
 //     lowerGraph.GetYaxis()->SetTicks("+-");
 //     lowerGraph.GetXaxis()->SetTicks("+-");
 //     
+//     pT_jet_mu_ratio_plot->GetUpperRefXaxis()->SetTicks("+-");
+//     pT_jet_mu_ratio_plot->GetUpperRefYaxis()->SetTicks("+-");
+     TPad* upperPad = pT_jet_mu_ratio_plot->GetUpperPad();
+     upperPad->cd();
+//     Hdata_ratioPT_mu_jet->Draw("hist,E");
+//     Hmc_ratioPT_mu_jet->Draw("hist,E,sames");
+     upperPad->cd()->BuildLegend();
+
+     pT_jet_mu_ratio_canvas->Modified();
+     pT_jet_mu_ratio_canvas->Update();
+//*******
+
+     TCanvas *pT_jet_mu15_ratio_canvas = new TCanvas("pT_jet_mu15_ratio_canvas","pT_jet_mu15_ratio_canvas");
+     Hdata_ratioPT_mu15_jet->Scale(1/Hdata_ratioPT_mu15_jet->Integral("width"));
+     Hdata_ratioPT_mu15_jet->SetStats(0);
+     Hmc_ratioPT_mu15_jet->Scale(1/Hmc_ratioPT_mu15_jet->Integral("width"));
+     Hmc_ratioPT_mu15_jet->SetStats(0);
+//******** TO be made a class for fancy plots
+     TRatioPlot *pT_jet_mu15_ratio_plot = new TRatioPlot(Hmc_ratioPT_mu15_jet,Hdata_ratioPT_mu15_jet,"divsym");
+     pT_jet_mu15_ratio_plot->SetSeparationMargin(margin);
+     pT_jet_mu15_ratio_plot->SetH1DrawOpt("hist,E");
+     pT_jet_mu15_ratio_plot->SetH2DrawOpt("hist,E");
+     pT_jet_mu15_ratio_plot->Draw();
+
+     TGraph* lowerGraph15 = pT_jet_mu15_ratio_plot->GetLowerRefGraph();
+     lowerGraph15->SetMarkerStyle(20);
+     lowerGraph15->SetMarkerColor(kBlack);
+     lowerGraph15->SetLineColor(kBlack);
+//     lowerGraph15.GetYaxis()->SetTicks("+-");
+//     lowerGraph15.GetXaxis()->SetTicks("+-");
+//     
 //     pT_jet_mu15_ratio_plot->GetUpperRefXaxis()->SetTicks("+-");
 //     pT_jet_mu15_ratio_plot->GetUpperRefYaxis()->SetTicks("+-");
-     TPad& upperPad = *pT_jet_mu15_ratio_plot->GetUpperPad();
-     upperPad.cd()->BuildLegend();
-
+     TPad* upperPad15 = pT_jet_mu15_ratio_plot->GetUpperPad();
+     upperPad15->cd()->BuildLegend();
 
      pT_jet_mu15_ratio_canvas->Modified();
+     pT_jet_mu15_ratio_canvas->Update();
 //*******
 //     divsym 	uses the histogram TH1::Divide method, yields symmetric errors
 //     diff 	subtracts the histograms
 //     diffsig 	subtracts the histograms and divides by the uncertainty 
 //     Hdata_ratioPT_mu15_jet->Draw("hist,E");
 //     Hmc_ratioPT_mu15_jet->Draw("hist,E,sames");
+
+
 
      mc_vs_data_jet_canvas->Write();
      pT_jet_mu15_ratio_canvas->Write();
