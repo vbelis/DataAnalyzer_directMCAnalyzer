@@ -3,12 +3,14 @@
 #include "tree_class.h"
 
 
-void plotter(){
+void plotter(bool with_data){
      float jet_pt_cut =10.,jet_eta_cut = 2.1, muon_pt_cut = 9., muon_eta_cut = 1.5;
      float xsec_15to20 = 2799000.0,xsec_20to30 = 2526000.0,xsec_30to50 = 1362000.0,xsec_50to80 = 376600.0, xsec_80to120 = 88930.0, xsec_120to170 = 21230.0, xsec_170to300 = 7055.0;  
      //XSDB for DAS=QCD_Pt-*_MuEnrichedPt5_TuneCP5_13TeV_pythia8 
      float relative_weight_20to30=1.; //Let the relative statistical weight of the events be normalized according to the 20to30 xsec.
      float relative_weight_15to20 = xsec_15to20/xsec_20to30, relative_weight_30to50 = xsec_30to50/xsec_20to30, relative_weight_50to80=xsec_50to80/xsec_20to30, relative_weight_80to120=xsec_80to120/xsec_20to30, relative_weight_120to170=xsec_120to170/xsec_20to30,relative_weight_170to300=xsec_170to300/xsec_20to30;
+  
+  std::vector<std::pair<std::string,float>> file_weight_pair={make_pair("15to20",relative_weight_15to20),make_pair("20to30",relative_weight_20to30),make_pair("30to50",relative_weight_30to50),make_pair("50to80",relative_weight_50to80),make_pair("80to120",relative_weight_80to120),make_pair("120to170",relative_weight_120to170),make_pair("170to300",relative_weight_170to300)};
 
      int nJets_offCone_mc=0, mc_events=0, nJets_offCone_data=0, data_events=0;
 
@@ -59,89 +61,42 @@ void plotter(){
      cout<<"Analyzing "<<nentries<<" MC events"<<endl;
      for(int ievent=0;ievent<nentries;++ievent){
 	     MC.GetEntry(ievent);
-             std::string current_input_file(mc_chain->GetFile()->GetName());
 	     if(MC.muon_pt->size() == 0 || MC.jet_pt->size()==0) continue;
-
 	     if(MC.muon_pt->at(0)<muon_pt_cut || MC.jet_pt->at(0)<jet_pt_cut || abs(MC.jet_eta->at(0))>jet_eta_cut || abs(MC.muon_eta->at(0))>muon_eta_cut) continue;
-//	     cout<<"MC.jet_pt->at(0)"<<MC.jet_pt->at(0)<<endl;
+             std::string current_input_file(mc_chain->GetFile()->GetName());
              ++mc_events;
+	     int current_weight=-1;
+	     if(current_input_file.std::string::find("15to20") != std::string::npos) current_weight=0;
+	     else if(current_input_file.std::string::find("20to30") != std::string::npos) current_weight=1;
+	     else if(current_input_file.std::string::find("30to50") != std::string::npos)  current_weight=2;
+	     else if(current_input_file.std::string::find("50to80") != std::string::npos) current_weight=3;
+	     else if(current_input_file.std::string::find("80to120") != std::string::npos) current_weight=4;
+	     else if(current_input_file.std::string::find("120to170") != std::string::npos) current_weight=5;
+	     else if(current_input_file.std::string::find("170to300") != std::string::npos) current_weight=6;
+
              float DR = deltaR(MC.jet_eta->at(0),MC.jet_phi->at(0),MC.muon_eta->at(0),MC.muon_phi->at(0));
-                         if(current_input_file.std::string::find("30to50") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_30to50);
-                         else if(current_input_file.std::string::find("50to80") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_50to80);
-                         else if(current_input_file.std::string::find("80to120") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_80to120);
-                         else if(current_input_file.std::string::find("120to170") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_120to170);
-                         else if(current_input_file.std::string::find("170to300") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_170to300);
-                         else if(current_input_file.std::string::find("15to20") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_15to20);	 
-                         else if(current_input_file.std::string::find("20to30") != std::string::npos) Hmc_deltaR_no04_jet_mu->Fill(DR,relative_weight_20to30);
+                          Hmc_deltaR_no04_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
             if(DR<=0.4){
 //******Just for pT(mu)/pT(jet) MC-vs-DATA investigation. Dependance on pT(mu)>15 GeV
-               if(MC.muon_pt->at(0)>=15){      
-                         if(current_input_file.std::string::find("30to50") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_30to50);
-                         else if(current_input_file.std::string::find("50to80") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_50to80);
-                         else if(current_input_file.std::string::find("80to120") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_80to120);
-                         else if(current_input_file.std::string::find("120to170") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_120to170);
-                         else if(current_input_file.std::string::find("170to300") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_170to300);
-                         else if(current_input_file.std::string::find("15to20") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_15to20);	 
-                         else if(current_input_file.std::string::find("20to30") != std::string::npos) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_20to30);
-		                        }
+               if(MC.muon_pt->at(0)>=15) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),file_weight_pair.at(current_weight).second); 
 //******
-             if(current_input_file.std::string::find("30to50") != std::string::npos){
-                        //text.find should return a -1 if the word isnt there, otherwise it returns the position in string that you found it
-                        //some_string.find('a') will EITHER return the position of the first appearance of 'a' in some_string if 'a' appears at least once in some_string, OR it will return a value that is equal to std::string::npos if 'a' does not appear at all in some_string.
-                         Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_30to50);
-			 Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_30to50);
-			 Hmc_deltaR_jet_mu->Fill(DR,relative_weight_30to50);
-                                                                                    }
-                         else if(current_input_file.std::string::find("50to80") != std::string::npos){
-                                 Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_50to80);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_50to80);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_50to80);
-				                                                                     }
-                         else if(current_input_file.std::string::find("80to120") != std::string::npos){
-		                 Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_80to120);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_80to120);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_80to120);
-			                                                                              }
-                         else if(current_input_file.std::string::find("120to170") != std::string::npos){
-				 Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_120to170);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_120to170);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_120to170);
-				                                                                       }
-                         else if(current_input_file.std::string::find("170to300") != std::string::npos){
-			         Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_170to300);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_170to300);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_170to300);
-				                                                                       }
-                         else if(current_input_file.std::string::find("15to20") != std::string::npos){	 
-			         Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_15to20);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_15to20);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_15to20);
-				  								     }
-                         else if(current_input_file.std::string::find("20to30") != std::string::npos){
-				 Hmc_jet_pt->Fill(MC.jet_pt->at(0),relative_weight_20to30);
-			         Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),relative_weight_20to30);
-			         Hmc_deltaR_jet_mu->Fill(DR,relative_weight_20to30);
-				  							  	     }	
+                Hmc_jet_pt->Fill(MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
+		Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
+		Hmc_deltaR_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
                        }
              else{ 
-		         ++nJets_offCone_mc; 
-//                         if(current_input_file.std::string::find("30to50") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_30to50);
-//                         else if(current_input_file.std::string::find("50to80") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_50to80);
-//                         else if(current_input_file.std::string::find("80to120") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_80to120);
-//                         else if(current_input_file.std::string::find("120to170") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_120to170);
-//                         else if(current_input_file.std::string::find("170to300") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_170to300);
-//                         else if(current_input_file.std::string::find("15to20") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_15to20);	 
-//                         else if(current_input_file.std::string::find("20to30") != std::string::npos) HdeltaR_outOf04Cone_mc->Fill(DR,relative_weight_20to30);
+		   ++nJets_offCone_mc; 
+//                   HdeltaR_outOf04Cone_mc->Fill(DR,file_weight_pair.at(current_weight).second);
 	          }
                                                }
 
+   if(with_data){
      TChain *data_chain = new TChain("mytree");
      data_chain->Add("/afs/cern.ch/work/v/vbelis/private/Inclusive_bPurity_data/data_*04*.root");
      nentries = data_chain->GetEntries();
 //     nentries = 10000;
      tree_class DATA;
-     DATA.Init(data_chain,"DATA");
-     
+     DATA.Init(data_chain,"DATA");  
      cout<<"Analyzing "<<nentries<<" DATA events"<<endl;
      for(int ievent=0;ievent<nentries;++ievent){
 //	     cout<<"ievent= "<<ievent<<endl;
@@ -161,6 +116,8 @@ void plotter(){
 			                           }
                  }
                                                }
+   }//if_with_data
+
      gStyle->SetLegendBorderSize(0);
      gROOT->SetBatch(kTRUE);//no graphical output on Draw()
      TFile *output_file = new TFile("data_vs_mc_plots.root","recreate");
@@ -278,8 +235,7 @@ void plotter(){
      deltaR_no04_canvas->Write();
      pT_jet_mu_ratio_canvas->Write();
 
-     delete output_file;
-     
+     delete output_file;     
      //C-Style text file I/O:
      FILE *print_file;
      print_file = fopen("calculation_results.txt","w");
