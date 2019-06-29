@@ -62,6 +62,29 @@ public :
    vector<float> *no_04_good_jet_phi;
    vector<float> *no_04_muon_jet_pt_ratio;
    vector<float> *no_04_muon_jet_deltaR;
+   
+   vector<float> *bjet_pt;
+   vector<float> *bjet_eta;
+   vector<float> *bjet_phi;
+   vector<float> *cjet_pt;
+   vector<float> *cjet_eta;
+   vector<float> *cjet_phi;
+   vector<float> *qjet_pt;
+   vector<float> *qjet_eta;
+   vector<float> *qjet_phi;
+   vector<float> *pTb_rel;
+   vector<float> *pTb_rel_dir;
+   vector<float> *pTb_rel_indir;
+   vector<float> *pTc_rel;
+   vector<float> *pTq_rel;
+   vector<float> *mub_dir_pt;
+   vector<float> *mub_dir_eta;
+   vector<float> *mub_dir_phi;
+   vector<float> *mub_seq_pt;
+   vector<float> *mub_seq_eta;
+   vector<float> *mub_seq_phi;
+
+   
    vector<float>   *muon_pt;
    vector<float>   *muon_eta;
    vector<float>   *muon_phi;
@@ -452,6 +475,27 @@ public :
    vector<float> *dR_lightJet_matching;
 
    // List of branches
+   TBranch *b_mub_dir_pt;
+   TBranch *b_mub_dir_eta;
+   TBranch *b_mub_dir_phi;
+   TBranch *b_mub_seq_pt;
+   TBranch *b_mub_seq_eta;
+   TBranch *b_mub_seq_phi;
+
+   TBranch  *b_bjet_pt;
+   TBranch  *b_bjet_eta;
+   TBranch  *b_bjet_phi;
+   TBranch  *b_cjet_pt;
+   TBranch  *b_cjet_eta;
+   TBranch  *b_cjet_phi;
+   TBranch  *b_qjet_pt;
+   TBranch  *b_qjet_eta;
+   TBranch  *b_qjet_phi;
+   TBranch  *b_pTb_rel;
+   TBranch  *b_pTb_rel_dir;
+   TBranch  *b_pTb_rel_indir;
+   TBranch  *b_pTc_rel;
+   TBranch  *b_pTq_rel;
    TBranch *b_no_04_good_muon_pt;
    TBranch *b_no_04_good_muon_eta;
    TBranch *b_no_04_good_muon_phi;
@@ -927,6 +971,27 @@ void tree_class::Init(TTree *tree,TString part)
    // (once per file to be processed).
 
    // Set object pointer
+   mub_dir_pt = nullptr;
+   mub_dir_eta= nullptr;
+   mub_dir_phi= nullptr;
+   mub_seq_pt = nullptr;
+   mub_seq_eta= nullptr;
+   mub_seq_phi= nullptr;
+
+   bjet_pt = nullptr;
+   bjet_eta = nullptr;
+   bjet_phi = nullptr;
+   cjet_pt = nullptr;
+   cjet_eta = nullptr;
+   cjet_phi = nullptr;
+   qjet_pt = nullptr;
+   qjet_eta = nullptr;
+   qjet_phi = nullptr;
+   pTb_rel = nullptr;
+   pTb_rel_dir = nullptr;
+   pTb_rel_indir = nullptr;
+   pTc_rel = nullptr;
+   pTq_rel = nullptr;
    good_muon_pt = nullptr;
    good_muon_eta = nullptr;
    good_muon_phi = nullptr;
@@ -1317,6 +1382,28 @@ void tree_class::Init(TTree *tree,TString part)
    fChain->SetBranchAddress("b_no_04_good_jet_phi",&b_no_04_good_jet_phi);
    fChain->SetBranchAddress("b_no_04_muon_jet_pt_ratio",&b_no_04_muon_jet_pt_ratio);
    fChain->SetBranchAddress("b_no_04_muon_jet_deltaR",&b_no_04_muon_jet_deltaR);
+
+   fChain->SetBranchAddress("mub_dir_pt",&mub_dir_pt,&b_mub_dir_pt);
+   fChain->SetBranchAddress("mub_dir_eta",&mub_dir_eta,&b_mub_dir_eta);
+   fChain->SetBranchAddress("mub_dir_phi",&mub_dir_phi,&b_mub_dir_phi);
+   fChain->SetBranchAddress("mub_seq_pt",&mub_seq_pt,&b_mub_seq_pt);
+   fChain->SetBranchAddress("mub_seq_eta",&mub_seq_eta,&b_mub_seq_eta);
+   fChain->SetBranchAddress("mub_seq_phi",&mub_seq_phi,&b_mub_seq_phi);
+
+   fChain->SetBranchAddress("bjet_pt",&bjet_pt); 
+   fChain->SetBranchAddress("bjet_eta",&bjet_eta);
+   fChain->SetBranchAddress("bjet_phi",&bjet_phi);
+   fChain->SetBranchAddress("cjet_pt",&cjet_pt);
+   fChain->SetBranchAddress("cjet_eta",&cjet_eta);
+   fChain->SetBranchAddress("cjet_phi",&cjet_phi);
+   fChain->SetBranchAddress("qjet_pt",&qjet_pt);
+   fChain->SetBranchAddress("qjet_eta",&qjet_eta);
+   fChain->SetBranchAddress("qjet_phi",&qjet_phi);
+   fChain->SetBranchAddress("pTb_rel",&pTb_rel);
+   fChain->SetBranchAddress("pTb_rel_dir",&pTb_rel_dir);
+   fChain->SetBranchAddress("pTb_rel_indir",&pTb_rel_indir);
+   fChain->SetBranchAddress("pTc_rel",pTc_rel);
+   fChain->SetBranchAddress("pTq_rel",pTq_rel);
 
    fChain->SetBranchAddress("good_muon_pt",&good_muon_pt,&b_good_muon_pt);
    fChain->SetBranchAddress("good_muon_eta",&good_muon_eta,&b_good_muon_eta);
@@ -1732,6 +1819,7 @@ void tree_class::Init(TTree *tree,TString part)
 
 
    Notify();
+   if(part.Contains("ALL")) fChain->SetBranchStatus("*",1);
    if (part.Contains("GENPART"))  fChain->SetBranchStatus("genpart_*",1);
    if (part.Contains("MUON"))  fChain->SetBranchStatus("muon_*",1);
    if (part.Contains("JET"))  fChain->SetBranchStatus("jet_*",1);

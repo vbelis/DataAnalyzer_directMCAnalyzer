@@ -2,17 +2,18 @@
 //Vasilis Belis: 12/2/2019. Inclusive bPurity study, data plots. Extraction of b Fraction with pt_rel plots of muons. 
 ////
 #include "tree_class.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 
 void data_plots(){ 
 
-     float pt_muon_cut=9.,pt_jet_cut=5.;
+     float pt_muon_cut=9.,pt_jet_cut=10.,eta_jet_cut=2.1,eta_muon_cut=1.5;
 	TChain *ch1 = new TChain("mytree");
         ch1->Add("/afs/cern.ch/work/v/vbelis/private/Inclusive_bPurity_data/data_*04*.root");
         TH1F * Hdata_pt_rel = new TH1F("Hdata_pt_rel","p_{T}^{rel}(muon) from BParking dataset;p_{T}^{rel} [GeV];",60,0.,6.5);
         TH1F * Hdata_pt_rel_no_dif = new TH1F("Hdata_pt_rel_no_dif","p_{T}^{rel}(muon) (no dif) from BParking dataset ;p_{T}^{rel} [GeV];",60,0.,6.5);
-        TH1F * Hdata_muon_pt = new TH1F("Hdata_muon_pt","Muon p_{T} from BParking dataset; p_{T}[GeV];",70,pt_muon_cut,100.);
-        TH1F * Hdata_jet_pt = new TH1F("Hdata_jet_pt","Jet p_{T} from BParking dataset; p_{T}[GeV];",70,pt_jet_cut,300.);
+        TH1F * Hdata_muon_pt = new TH1F("Hdata_muon_pt","Muon p_{T} from BParking dataset; p_{T}[GeV];",45,pt_muon_cut,100.);
+        TH1F * Hdata_jet_pt = new TH1F("Hdata_jet_pt","Jet p_{T} from BParking dataset; p_{T}[GeV];",45,pt_jet_cut,100.);
         TH1F * Hdata_deltaR_jet_mu = new TH1F("Hdata_deltaR_jet_mu","#Delta R(jet-mu); #Delta R",50, 0.,2.5);
 
 	tree_class data;
@@ -23,9 +24,10 @@ void data_plots(){
   
 	for(int ientry=0;ientry<nentries;++ientry){
 		data.GetEntry(ientry);
+		cout<<"iEvent/Entry = "<<ientry<<endl;
                 int nmuons=data.pt_rel->size();
 		for(int imuon=0;imuon<nmuons;++imuon){
-
+                   if(data.good_muon_pt->at(imuon)<pt_muon_cut || data.good_jet_pt->at(imuon)<pt_jet_cut || abs(data.good_muon_eta->at(imuon))>eta_muon_cut || abs(data.good_jet_eta->at(imuon))>eta_jet_cut || deltaR(data.good_muon_eta->at(imuon),data.good_muon_phi->at(imuon),data.good_jet_eta->at(imuon),data.good_jet_phi->at(imuon))>0.4) continue;
 			Hdata_pt_rel->Fill(data.pt_rel->at(imuon));
                         Hdata_pt_rel_no_dif->Fill(data.pt_rel_no_dif->at(imuon));
                         Hdata_muon_pt->Fill(data.good_muon_pt->at(imuon));
