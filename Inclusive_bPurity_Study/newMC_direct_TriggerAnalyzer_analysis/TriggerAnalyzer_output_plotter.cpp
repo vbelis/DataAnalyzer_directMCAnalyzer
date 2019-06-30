@@ -16,11 +16,12 @@ void plotter(bool with_data){
 
 
      TChain *mc_chain = new TChain("demo/mytree");
-     mc_chain->Add("/afs/cern.ch/work/v/vbelis/private/MINIAOD_QCD_samples_15to300/*.root");     
+//     mc_chain->Add("/afs/cern.ch/work/v/vbelis/private/MINIAOD_QCD_samples_15to300/*.root");     
+     mc_chain->Add("/afs/cern.ch/work/v/vbelis/private/MINIAOD_QCD_samples_15to300_pTrelCalc/*.root");
      int nentries = mc_chain->GetEntries();
 //     int nentries = 10000;
      tree_class MC;
-     MC.Init(mc_chain,"JET_MUON");
+     MC.Init(mc_chain,"ALL");
      TH1F *Hdata_jet_pt = new TH1F("Hdata_jet_pt","Data inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
      Hdata_jet_pt->SetLineColor(kRed);
      Hdata_jet_pt->SetLineWidth(2);
@@ -59,7 +60,7 @@ void plotter(bool with_data){
 //     HdeltaR_outOf04Cone_data->SetLineColor(kRed);
 
      cout<<"Analyzing "<<nentries<<" MC events"<<endl;
-     for(int ievent=0;ievent<nentries;++ievent){
+     for(int ievent=0;ievent<10000;++ievent){
 	     MC.GetEntry(ievent);
 	     if(MC.muon_pt->size() == 0 || MC.jet_pt->size()==0) continue;
 	     if(MC.muon_pt->at(0)<muon_pt_cut || MC.jet_pt->at(0)<jet_pt_cut || abs(MC.jet_eta->at(0))>jet_eta_cut || abs(MC.muon_eta->at(0))>muon_eta_cut) continue;
@@ -83,6 +84,9 @@ void plotter(bool with_data){
                 Hmc_jet_pt->Fill(MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
 		Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
 		Hmc_deltaR_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
+		printf("Sizes: pTb_rel/pTb_rel_dir/pTb_rel_indir= %lu/%lu/%lu\n",MC.pTb_rel->size(),MC.pTb_rel_dir->size(),MC.pTb_rel_indir->size());
+		printf("Sizes: pTc_rel= %lu\n",MC.pTc_rel->size());
+		printf("Sizes: pTq_rel= %lu\n",MC.pTq_rel->size());
                        }
              else{ 
 		   ++nJets_offCone_mc; 
