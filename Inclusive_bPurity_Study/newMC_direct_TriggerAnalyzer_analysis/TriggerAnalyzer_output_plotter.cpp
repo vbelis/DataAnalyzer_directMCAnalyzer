@@ -1,6 +1,7 @@
 
 #include "DataFormats/Math/interface/deltaR.h"
 #include "tree_class.h"
+#include <ctime>//get current date/time. For file names if needed.
 
 
 void plotter(bool with_data){
@@ -22,18 +23,36 @@ void plotter(bool with_data){
 //     int nentries = 10000;
      tree_class MC;
      MC.Init(mc_chain,"ALL");
+
+     TH1F *Hmc_jet_pt = new TH1F("Hmc_jet_pt","MC inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
+     Hmc_jet_pt->SetLineWidth(2);
+
+     TH1F  *Hmc_pTbrel = new TH1F("p_{T}^{rel}(b#rightarrow#mu+X)",";p_{T}^{rel} [GeV]; Events/Bin",60,0.,6.5);
+     Hmc_pTbrel->SetLineWidth(2);
+     TH1F  *Hmc_pTbrel_dir = new TH1F("p_{T}^{rel}(b#rightarrow#mu+X)_dir",";p_{T}^{rel} [GeV]; Events/Bin",60,0.,6.5);
+     Hmc_pTbrel_dir->SetLineWidth(2);
+     TH1F  *Hmc_pTbrel_seq = new TH1F("p_{T}^{rel}(b#rightarrow..#rightarrow#mu+X)",";p_{T}^{rel} [GeV]; Events/Bin",60,0.,6.5);
+     Hmc_pTbrel_seq->SetLineWidth(2);
+     TH1F  *Hmc_pTcrel = new TH1F("p_{T}^{rel}(c#rightarrow#mu+X)",";p_{T}^{rel} [GeV]; Events/Bin",60,0.,6.5);
+     Hmc_pTcrel->SetLineWidth(2);
+     TH1F  *Hmc_pTqrel = new TH1F("p_{T}^{rel}(q#rightarrow#mu+X)",";p_{T}^{rel} [GeV]; Events/Bin",60,0.,6.5);
+     Hmc_pTqrel->SetLineWidth(2);
+
+     TH1F *Hmc_bjet_pt = new TH1F("p_{T}^{bJet}",";p_{T}^{jet} [GeV];",45,jet_pt_cut,100);
+     TH1F *Hmc_cjet_pt = new TH1F("p_{T}^{cJet}",";p_{T}^{jet} [GeV];",45,jet_pt_cut,100);
+     TH1F *Hmc_qjet_pt = new TH1F("p_{T}^{qJet}",";p_{T}^{jet} [GeV];",45,jet_pt_cut,100);
+     
+
      TH1F *Hdata_jet_pt = new TH1F("Hdata_jet_pt","Data inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
      Hdata_jet_pt->SetLineColor(kRed);
      Hdata_jet_pt->SetLineWidth(2);
 
-     TH1F *Hmc_jet_pt = new TH1F("Hmc_jet_pt","MC inclusive p_{T}^{jet};p_{T}^{jet};Events/2 GeV",45,jet_pt_cut,100);
-     Hmc_jet_pt->SetLineWidth(2);
-     
      TH1F *Hmc_deltaR_jet_mu = new TH1F("#DeltaR(jet,#mu) MC",";#DeltaR(jet,#mu);",50,0.,0.4);
      Hmc_deltaR_jet_mu->SetLineWidth(2);
      TH1F *Hdata_deltaR_jet_mu = new TH1F("#DeltaR(jet,#mu) DATA",";#DeltaR(jet,#mu);",50,0.,0.4);
      Hdata_deltaR_jet_mu->SetLineWidth(2);
      Hdata_deltaR_jet_mu->SetLineColor(kRed);
+     
 
      TH1F *Hmc_deltaR_no04_jet_mu = new TH1F("#DeltaR(jet,#mu)_no04 MC",";#DeltaR(jet,#mu);",50,0.,4);
      Hmc_deltaR_no04_jet_mu->SetLineWidth(2);
@@ -58,9 +77,9 @@ void plotter(bool with_data){
 //     TH1F *HdeltaR_outOf04Cone_data = new TH1F("deltaR(jet,mu)_data",";#Delta R(jet,#mu);",50,0.4,3.5); 
 //     HdeltaR_outOf04Cone_data->SetLineWidth(2);
 //     HdeltaR_outOf04Cone_data->SetLineColor(kRed);
-
+   
      cout<<"Analyzing "<<nentries<<" MC events"<<endl;
-     for(int ievent=0;ievent<10000;++ievent){
+     for(int ievent=0;ievent<nentries;++ievent){
 	     MC.GetEntry(ievent);
 	     if(MC.muon_pt->size() == 0 || MC.jet_pt->size()==0) continue;
 	     if(MC.muon_pt->at(0)<muon_pt_cut || MC.jet_pt->at(0)<jet_pt_cut || abs(MC.jet_eta->at(0))>jet_eta_cut || abs(MC.muon_eta->at(0))>muon_eta_cut) continue;
@@ -76,17 +95,34 @@ void plotter(bool with_data){
 	     else if(current_input_file.std::string::find("170to300") != std::string::npos) current_weight=6;
 
              float DR = deltaR(MC.jet_eta->at(0),MC.jet_phi->at(0),MC.muon_eta->at(0),MC.muon_phi->at(0));
-                          Hmc_deltaR_no04_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
+                      if(with_data)    Hmc_deltaR_no04_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
             if(DR<=0.4){
+         if(with_data){
 //******Just for pT(mu)/pT(jet) MC-vs-DATA investigation. Dependance on pT(mu)>15 GeV
                if(MC.muon_pt->at(0)>=15) Hmc_ratioPT_mu15_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),file_weight_pair.at(current_weight).second); 
 //******
-                Hmc_jet_pt->Fill(MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
 		Hmc_ratioPT_mu_jet->Fill(MC.muon_pt->at(0)/MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
 		Hmc_deltaR_jet_mu->Fill(DR,file_weight_pair.at(current_weight).second);
+            }//if_data
+                Hmc_jet_pt->Fill(MC.jet_pt->at(0),file_weight_pair.at(current_weight).second);
 		printf("Sizes: pTb_rel/pTb_rel_dir/pTb_rel_indir= %lu/%lu/%lu\n",MC.pTb_rel->size(),MC.pTb_rel_dir->size(),MC.pTb_rel_indir->size());
 		printf("Sizes: pTc_rel= %lu\n",MC.pTc_rel->size());
 		printf("Sizes: pTq_rel= %lu\n",MC.pTq_rel->size());
+                if(MC.bjet_pt->size() == 1) Hmc_bjet_pt->Fill(MC.bjet_pt->at(0),file_weight_pair.at(current_weight).second);
+                else if(MC.cjet_pt->size() == 1) Hmc_cjet_pt->Fill(MC.cjet_pt->at(0),file_weight_pair.at(current_weight).second);
+		else if(MC.qjet_pt->size() ==1) Hmc_qjet_pt->Fill(MC.qjet_pt->at(0),file_weight_pair.at(current_weight).second);
+		if(MC.pTb_rel->size() == 1){
+			Hmc_pTbrel->Fill(MC.pTb_rel->at(0),file_weight_pair.at(current_weight).second);
+			if(MC.pTb_rel_dir->size() == 1) Hmc_pTbrel_dir->Fill(MC.pTb_rel_dir->at(0),file_weight_pair.at(current_weight).second);
+			else Hmc_pTbrel_seq->Fill(MC.pTb_rel_indir->at(0),file_weight_pair.at(current_weight).second);
+		                           }
+		else if(MC.pTc_rel->size() == 1){
+			Hmc_pTcrel->Fill(MC.pTc_rel->at(0),file_weight_pair.at(current_weight).second);
+		                           }
+		else if(MC.pTq_rel->size() == 1){
+			Hmc_pTqrel->Fill(MC.pTq_rel->at(0),file_weight_pair.at(current_weight).second);
+		                           }
+
                        }
              else{ 
 		   ++nJets_offCone_mc; 
@@ -123,11 +159,21 @@ void plotter(bool with_data){
    }//if_with_data
 
      gStyle->SetLegendBorderSize(0);
-     gROOT->SetBatch(kTRUE);//no graphical output on Draw()
-     TFile *output_file = new TFile("data_vs_mc_plots.root","recreate");
-     Hmc_jet_pt->Write();
-     Hdata_jet_pt->Write();
+     gROOT->SetBatch(kTRUE);//no graphical output on Draw(), just write the plots on file.
 
+     TFile *output_file = new TFile("MC_pTrel_060719.root","recreate");
+     Hmc_jet_pt->Write();
+     Hmc_bjet_pt->Write();
+     Hmc_cjet_pt->Write();
+     Hmc_qjet_pt->Write();
+     Hmc_pTbrel->Write();
+     Hmc_pTbrel_dir->Write();
+     Hmc_pTbrel_seq->Write();
+     Hmc_pTcrel->Write();
+     Hmc_pTqrel->Write();
+
+   if(with_data){
+     Hdata_jet_pt->Write(); 
      TCanvas *mc_vs_data_jet_canvas = new TCanvas("data -vs- MC jet_pt","data -vs- MC jet_pt");
      mc_vs_data_jet_canvas->Divide(1,2);
      mc_vs_data_jet_canvas->cd(1);
@@ -230,26 +276,30 @@ void plotter(bool with_data){
 //     Hdata_ratioPT_mu15_jet->Draw("hist,E");
 //     Hmc_ratioPT_mu15_jet->Draw("hist,E,sames");
 
-
-
      mc_vs_data_jet_canvas->Write();
      pT_jet_mu15_ratio_canvas->Write();
+     pT_jet_mu_ratio_canvas->Write();
      deltaR_canvas->Write();
 //     deltaR_outOf04Cone_canvas->Write();
      deltaR_no04_canvas->Write();
-     pT_jet_mu_ratio_canvas->Write();
+   }//if_data
 
      delete output_file;     
      //C-Style text file I/O:
      FILE *print_file;
      print_file = fopen("calculation_results.txt","w");
      fprintf(print_file,"Number of MC events that passed all cuts & criteria: %i. Number of Jets with deltaR(jet,mu)>0.4: %i, perc=%f %%\n",mc_events,nJets_offCone_mc,100.*nJets_offCone_mc/mc_events);
+   if(with_data){
      fprintf(print_file,"Number of DATA events that passed all cuts & criteria: %i. Number of Jets with deltaR(jet,mu)>0.4: %i, perc=%f %%\n",data_events,nJets_offCone_data,100.*nJets_offCone_data/data_events);
-     fprintf(print_file,"MC: N(pTjet>25)/Ntot = %f %%\n",Hmc_jet_pt->Integral(Hmc_jet_pt->FindBin(25.),Hmc_jet_pt->GetNbinsX()+1)/Hmc_jet_pt->Integral(0,Hmc_jet_pt->GetNbinsX()+1)*100);
      fprintf(print_file,"DATA: N(pTjet>25)/Ntot = %f %%\n",Hdata_jet_pt->Integral(Hdata_jet_pt->FindBin(25.),Hdata_jet_pt->GetNbinsX()+1)/Hdata_jet_pt->Integral(0,Hdata_jet_pt->GetNbinsX()+1)*100);
-     for(int ibin=0;ibin<Hmc_jet_pt->GetSize();++ibin) fprintf(print_file,"Hmc_jet_pt->GetBinContent(%i)=%f\n",ibin,Hmc_jet_pt->GetBinContent(ibin));
+   }//if_data
+     fprintf(print_file,"MC: N(pTjet>25)/Ntot = %f %%\n",Hmc_jet_pt->Integral(Hmc_jet_pt->FindBin(25.),Hmc_jet_pt->GetNbinsX()+1)/Hmc_jet_pt->Integral(0,Hmc_jet_pt->GetNbinsX()+1)*100);
+   if(with_data){
      fprintf(print_file,"+++Now for the data:");
-     for(int ibin=0;ibin<Hdata_jet_pt->GetSize();++ibin) fprintf(print_file,"Hdata_jet_pt->GetBinContent(%i)=%f\n",ibin,Hdata_jet_pt->GetBinContent(ibin));
+     for(int ibin=0;ibin<Hdata_jet_pt->GetSize();++ibin) fprintf(print_file,"Hdata_jet_pt->GetBinContent(%i)=%f\n",ibin,Hdata_jet_pt->GetBinContent(ibin));    
+    }//if_data
+     fprintf(print_file,"+++Now for the MC:");
+     for(int ibin=0;ibin<Hmc_jet_pt->GetSize();++ibin) fprintf(print_file,"Hmc_jet_pt->GetBinContent(%i)=%f\n",ibin,Hmc_jet_pt->GetBinContent(ibin));
      fclose(print_file);
     //delete print_file;
 }
