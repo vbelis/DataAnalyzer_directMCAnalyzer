@@ -18,9 +18,9 @@ void Graphics(Int_t & m,Int_t & n){   cout<<endl<<endl<<"--------------------[IN
      TFile *fftestc = new TFile("../templates/c_template_1st_result.root");
      TFile *fftestl = new TFile("../templates/uds_template_1st_result.root");
 */ 
-     TFile *fftestb = new TFile("../../templates/b_template_QCD_Pt-15to300.root");
-     TFile *fftestc = new TFile("../../templates/c_template_QCD_Pt-15to300.root");
-     TFile *fftestl = new TFile("../../templates/uds_template_QCD_Pt-15to300.root");
+     TFile *fftestb = new TFile("../../templates/b_template_QCD_Pt-15to300_10JetpTcut.root");
+     TFile *fftestc = new TFile("../../templates/c_template_QCD_Pt-15to300_10JetpTcut.root");
+     TFile *fftestl = new TFile("../../templates/uds_template_QCD_Pt-15to300_10JetpTcut.root");
 
      TH1F *Hpt_rel_b = (TH1F*)fftestb->Get("Hpt_rel");
      TH1F *Hpt_rel_c = (TH1F*)fftestc->Get("Hpt_rel");
@@ -32,13 +32,12 @@ void Graphics(Int_t & m,Int_t & n){   cout<<endl<<endl<<"--------------------[IN
      TH1F * Hpt_rel_l_no_dif = (TH1F*) fftestl->Get("Hpt_rel_no_dif");
      auto Hpt_rel_cl_no_dif = new TH1F(*Hpt_rel_c_no_dif);    
 
-
-     TH1F *Hdata=new TH1F("Hdata","Pseudo-data points;p_{T}^{rel};entries/bin", 60, 0., 6.5);
+     TH1F *Hdata=new TH1F("Hdata","Pseudo-data points;p_{T}^{rel};entries/bin", 60, 0., 3.5);
 //CAUTION I CHANGE THE BINNING TO INVASTIGATE THE FITTING PROCEDURE
-     TH1F *Hdata_b=new TH1F("Hdata_b","Pseudo data of b quark p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 6.5);
-     TH1F *Hdata_c=new TH1F("Hdata_c","Pseudo data of c quark p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 6.5);
-     TH1F *Hdata_l=new TH1F("Hdata_l","Pseudo data of uds quarks p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 6.5);
-     TH1F *Hdata_cl=new TH1F("Hdata_cl","Pseudo data of udsc quarks p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 6.5);
+     TH1F *Hdata_b=new TH1F("Hdata_b","Pseudo data of b quark p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 3.5);
+     TH1F *Hdata_c=new TH1F("Hdata_c","Pseudo data of c quark p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 3.5);
+     TH1F *Hdata_l=new TH1F("Hdata_l","Pseudo data of uds quarks p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 3.5);
+     TH1F *Hdata_cl=new TH1F("Hdata_cl","Pseudo data of udsc quarks p_{T}^{rel}; p_{T}^{rel}; entries/bin", 60, 0., 3.5);
 
 
      TH1F *Hpullb=new TH1F("Hpullb","Pull Test a_{b}; pull=#frac{exp-truth}{Error_{exp}}; entries/bin", 80 , -4., 4.);
@@ -55,10 +54,24 @@ void Graphics(Int_t & m,Int_t & n){   cout<<endl<<endl<<"--------------------[IN
 
 
 void data_fit(){
+
+     Hpt_rel_b_no_dif->GetXaxis()->SetRangeUser(0,3.5);
+     Hpt_rel_c_no_dif->GetXaxis()->SetRangeUser(0,3.5);
+     Hpt_rel_l_no_dif->GetXaxis()->SetRangeUser(0,3.5);
+     Hpt_rel_cl_no_dif->GetXaxis()->SetRangeUser(0,3.5);
+
+     Hpt_rel_b_no_dif->SetName("p_{T}^{rel}(b#rightarrow#mu+X)");
+     Hpt_rel_c_no_dif->SetName("p_{T}^{rel}(c#rightarrow#mu+X)");
+     Hpt_rel_l_no_dif->SetName("p_{T}^{rel}(q#rightarrow#mu+X)");
+     Hpt_rel_cl_no_dif->SetName("p_{T}^{rel}(q#rightarrow#mu+X)");
+
      Hpt_rel_b->Sumw2();
      Hpt_rel_c->Sumw2(); 
      Hpt_rel_l->Sumw2();
      Hpt_rel_cl->Sumw2();
+
+     //Hpt_rel_b_no_dif->GetYaxis()->SetTitleFont(42);
+
 
        Hpt_rel_c->SetLineColor(kRed);
        Hpt_rel_b->SetLineColor(kBlue);
@@ -100,95 +113,99 @@ void data_fit(){
     //DEFINING A FUNCTIONS WITH WHICH WE PARAMETRIZE THE pT_rel DISTRIBUTIONS
 
 /*
-    TF1 *B = new TF1("B","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5))",0.,6.5);
-//    TF1 *B = new TF1("B","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,6.5);
+    TF1 *B = new TF1("B","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5))",0.,3.5);
+//    TF1 *B = new TF1("B","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,3.5);
         B->SetParNames("ab","bb","cb","db","eb","ffb");   
                  B->SetLineColor(kBlue);
 
-    TF1 *C = new TF1("C","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,6.5);
+    TF1 *C = new TF1("C","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,3.5);
 
        C->SetParNames("ac","bc","cc","dc","ec","ffc");
                  C->SetLineColor(kRed);
 
-    TF1 *L = new TF1("L","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,6.5);
+    TF1 *L = new TF1("L","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,3.5);
 
        L->SetParNames("al","bl","cl","dl","el","ffl");
                  L->SetLineColor(kGreen);
 //And for merging c and uds distributions.
-    TF1 *CL = new TF1("CL","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,6.5);
+    TF1 *CL = new TF1("CL","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,3.5);
        CL->SetParNames("acl","bcl","ccl","dcl","ecl","ffcl");
                  CL->SetLineColor(kOrange-3);
                  */
 
 //pT_rel with no dif.
-    TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8))",0.,6.5);
-    //TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5))",0.,6.5);
-//    TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,6.5);
+    TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8)+[10]*pow(x,9))",0.,3.5);
+    //TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5))",0.,3.5);
+    //TF1 *B_no_dif = new TF1("B_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4))",0.,3.5);
         B_no_dif->SetParNames("ab","bb","cb","db","eb","ffb");   
                  B_no_dif->SetLineColor(kBlue);
 
-    TF1 *C_no_dif = new TF1("C_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7))",0.,6.5);
+  //  TF1 *C_no_dif = new TF1("C_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8)+[10]*pow(x,9))",0.,3.5);
+    TF1 *C_no_dif = new TF1("C_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8)+[10]*pow(x,9))",0.,3.5);
 
        C_no_dif->SetParNames("ac","bc","cc","dc","ec","ffc");
                  C_no_dif->SetLineColor(kRed);
 
-    TF1 *L_no_dif = new TF1("L_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6))",0.,6.5);
+    TF1 *L_no_dif = new TF1("L_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8)+[10]*pow(x,9))",0.,3.5);
 
        L_no_dif->SetParNames("al","bl","cl","dl","el","ffl");
                  L_no_dif->SetLineColor(kGreen);
 //And for merging c and uds distributions.
-    TF1 *CL_no_dif = new TF1("CL_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7))",0.,6.5);
+    TF1 *CL_no_dif = new TF1("CL_no_dif","[0]*pow(x,[1])*exp([2]*x+[3]*pow(x,2)+[4]*pow(x,3)+[5]*pow(x,4)+[6]*pow(x,5)+[7]*pow(x,6)+[8]*pow(x,7)+[9]*pow(x,8)+[10]*pow(x,9))",0.,3.5);
        CL_no_dif->SetParNames("acl","bcl","ccl","dcl","ecl","ffcl");
                  CL_no_dif->SetLineColor(kOrange-3);
 
 
 
-          Hpt_rel_b->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_b->SetTitle("Fitting p_{#perp}^{rel} distribution b #rightarrow #mu+X");
-          Hpt_rel_b->GetYaxis()->SetTitle(" ");
+          Hpt_rel_b->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_b->SetTitle("");
+          //Hpt_rel_b->GetYaxis()->SetTitle("Events/Bin");
           Hpt_rel_b->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_b->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_c->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_c->SetTitle("Fitting p_{#perp}^{rel} distribution c #rightarrow #mu+X'");
+          Hpt_rel_c->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_c->SetTitle("");
           Hpt_rel_c->GetYaxis()->SetTitle(" ");
           Hpt_rel_c->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_c->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_l->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_l->SetTitle("Fitting p_{#perp}^{rel} distribution uds #rightarrow #mu+X''");
+          Hpt_rel_l->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_l->SetTitle("");
           Hpt_rel_l->GetYaxis()->SetTitle(" ");
           Hpt_rel_l->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_l->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_cl->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_cl->SetTitle("Fitting p_{#perp}^{rel} distribution udsc #rightarrow #mu+#tilde{X}");
+          Hpt_rel_cl->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_cl->SetTitle("");
           Hpt_rel_cl->GetYaxis()->SetTitle(" ");
           Hpt_rel_cl->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_cl->GetXaxis()->SetTitleOffset(0.65);
 
 
 
-          Hpt_rel_b_no_dif->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_b_no_dif->SetTitle("Fitting p_{#perp}^{rel} distribution b #rightarrow #mu+X");
+          Hpt_rel_b_no_dif->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_b_no_dif->GetYaxis()->SetTitle("Entries/Bin");
+          //Hpt_rel_b_no_dif->GetYaxis()->CenterTitle(1);
+          //Hpt_rel_b_no_dif->GetYaxis()->SetTitleSize(0.065);
+          Hpt_rel_b_no_dif->SetTitle("");
           Hpt_rel_b_no_dif->GetYaxis()->SetTitle(" ");
           Hpt_rel_b_no_dif->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_b_no_dif->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_c_no_dif->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_c_no_dif->SetTitle("Fitting p_{#perp}^{rel} distribution c #rightarrow #mu+X'");
+          Hpt_rel_c_no_dif->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_c_no_dif->SetTitle("");
           Hpt_rel_c_no_dif->GetYaxis()->SetTitle(" ");
           Hpt_rel_c_no_dif->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_c_no_dif->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_l_no_dif->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_l_no_dif->SetTitle("Fitting p_{#perp}^{rel} distribution uds #rightarrow #mu+X''");
+          Hpt_rel_l_no_dif->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_l_no_dif->SetTitle("");
           Hpt_rel_l_no_dif->GetYaxis()->SetTitle(" ");
           Hpt_rel_l_no_dif->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_l_no_dif->GetXaxis()->SetTitleOffset(0.65);
 
-          Hpt_rel_cl_no_dif->GetXaxis()->SetTitle("p_{#perp}^{rel} [GeV]");
-          Hpt_rel_cl_no_dif->SetTitle("Fitting p_{#perp}^{rel} distribution udsc #rightarrow #mu+#tilde{X}");
+          Hpt_rel_cl_no_dif->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+          Hpt_rel_cl_no_dif->SetTitle("");
           Hpt_rel_cl_no_dif->GetYaxis()->SetTitle(" ");
           Hpt_rel_cl_no_dif->GetXaxis()->SetTitleSize(0.05);
           Hpt_rel_cl_no_dif->GetXaxis()->SetTitleOffset(0.65);
@@ -203,21 +220,21 @@ void data_fit(){
                  Hpt_rel_b->Fit(B);
                  Hpt_rel_b->Draw("hist,same");
                  gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_b->Integral('width')= "<<Hpt_rel_b->Integral("width")<< ", B->Integral(0,6.5)= "<<B->Integral(0,6.5)<<endl;     
+           //cout<<"Hpt_rel_b->Integral('width')= "<<Hpt_rel_b->Integral("width")<< ", B->Integral(0,3.5)= "<<B->Integral(0,3.5)<<endl;     
  
                  test3->cd(2);
                  C->SetParameter(0,1200);
                  Hpt_rel_c->Fit(C,"WL");
                  Hpt_rel_c->Draw("hist,same");
                  gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_c->Integral('width')= "<<Hpt_rel_c->Integral("width")<< ", C->Integral(0,6.5)= "<<C->Integral(0,6.5)<<endl;     
+           //cout<<"Hpt_rel_c->Integral('width')= "<<Hpt_rel_c->Integral("width")<< ", C->Integral(0,3.5)= "<<C->Integral(0,3.5)<<endl;     
 
                  test3->cd(3);
                  L->SetParameter(0,1000);
                  Hpt_rel_l->Fit(L,"L");
                  Hpt_rel_l->Draw("hist,same");
                  gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_l->Integral('width')= "<<Hpt_rel_l->Integral("width")<< ", L->Integral(0,6.5)= "<<L->Integral(0,6.5)<<endl;     
+           //cout<<"Hpt_rel_l->Integral('width')= "<<Hpt_rel_l->Integral("width")<< ", L->Integral(0,3.5)= "<<L->Integral(0,3.5)<<endl;     
 
                  test3->cd(4);
                  CL->SetParameter(0,2000);
@@ -232,36 +249,53 @@ void data_fit(){
  
                 TCanvas *input_parametrization_canvas = new TCanvas("Parametrizing the input distributions (no_dif)");
 
-                 input_parametrization_canvas->cd();	      
+                 input_parametrization_canvas->cd(1);	      
+                 //gStyle->SetStatY(0.9);                
+                 //// Set y-position (fraction of pad size)
+                 //gStyle->SetStatX(1.3);                
+                 //// Set x-position (fraction of pad size)
+                 //gStyle->SetStatW(0.25);                
+                 //// Set width of stat-box (fraction of pad size)
+                 //gStyle->SetStatH(0.07);                
+                 // Set height of stat-box (fraction of pad size)
 		                // Hpt_rel_b_no_dif->Scale(1/Hpt_rel_b->Integral("width"));          
                  input_parametrization_canvas->Divide(2,2);
                  input_parametrization_canvas->cd(1);
-                 B_no_dif->SetParameter(0,200);
+                 input_parametrization_canvas->cd(1)->SetTickx();
+                 input_parametrization_canvas->cd(1)->SetTicky();
+   
+                 B_no_dif->SetParameter(0,2e+04);
                  Hpt_rel_b_no_dif->Fit(B_no_dif,"L");
                  
                  Hpt_rel_b_no_dif->Draw("hist,same");
-                 gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_b_no_dif->Integral('width')= "<<Hpt_rel_b_no_dif->Integral("width")<< ", B_no_dif->Integral(0,6.5)= "<<B_no_dif->Integral(0,6.5)<<endl;     
+                 gStyle->SetOptFit(100);
+           //cout<<"Hpt_rel_b_no_dif->Integral('width')= "<<Hpt_rel_b_no_dif->Integral("width")<< ", B_no_dif->Integral(0,3.5)= "<<B_no_dif->Integral(0,3.5)<<endl;     
  
                  input_parametrization_canvas->cd(2);
-                 C_no_dif->SetParameter(0,200);
+                 input_parametrization_canvas->cd(2)->SetTickx();
+                 input_parametrization_canvas->cd(2)->SetTicky();
+                 C_no_dif->SetParameter(0,2e+04);
                  Hpt_rel_c_no_dif->Fit(C_no_dif,"L");
                  Hpt_rel_c_no_dif->Draw("hist,same");
-                 gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_c_no_dif->Integral('width')= "<<Hpt_rel_c_no_dif->Integral("width")<< ", C_no_dif->Integral(0,6.5)= "<<C_no_dif->Integral(0,6.5)<<endl;     
+                 gStyle->SetOptFit(100);
+           //cout<<"Hpt_rel_c_no_dif->Integral('width')= "<<Hpt_rel_c_no_dif->Integral("width")<< ", C_no_dif->Integral(0,3.5)= "<<C_no_dif->Integral(0,3.5)<<endl;     
 
                  input_parametrization_canvas->cd(3);
-                 L_no_dif->SetParameter(0,1000);
+                 input_parametrization_canvas->cd(3)->SetTickx();
+                 input_parametrization_canvas->cd(3)->SetTicky();
+                 L_no_dif->SetParameter(0,2e+04);
                  Hpt_rel_l_no_dif->Fit(L_no_dif,"L");
                  Hpt_rel_l_no_dif->Draw("hist,same");
-                 gStyle->SetOptFit(1);
-           //cout<<"Hpt_rel_l_no_dif->Integral('width')= "<<Hpt_rel_l_no_dif->Integral("width")<< ", L_no_dif->Integral(0,6.5)= "<<L_no_dif->Integral(0,6.5)<<endl;     
+                 gStyle->SetOptFit(100);
+           //cout<<"Hpt_rel_l_no_dif->Integral('width')= "<<Hpt_rel_l_no_dif->Integral("width")<< ", L_no_dif->Integral(0,3.5)= "<<L_no_dif->Integral(0,3.5)<<endl;     
 
                  input_parametrization_canvas->cd(4);
-                 CL_no_dif->SetParameter(0,200);
+                 input_parametrization_canvas->cd(4)->SetTickx();
+                 input_parametrization_canvas->cd(4)->SetTicky();
+                 CL_no_dif->SetParameter(0,1.5e+05);
                  Hpt_rel_cl_no_dif->Fit(CL_no_dif,"L");
-                 Hpt_rel_cl_no_dif->Draw("same,histo");
-                 gStyle->SetOptFit(1);
+                 Hpt_rel_cl_no_dif->Draw("hist,same");
+                 gStyle->SetOptFit(100);
 
 		 
 		 
@@ -299,37 +333,38 @@ void data_fit(){
             CL_no_dif->SetParameter(0,CL_no_dif->GetParameter(0)/Hpt_rel_cl_no_dif->GetEntries());
 */
 	
-    TString B_no_dif_formula,L_no_dif_formula,C_no_dif_formula,CL_no_dif_formula;
+    TString B_no_dif_formula,L_no_dif_formula,C_no_dif_formula,CL_no_dif_formula,newCL_no_dif_formula;
     B_no_dif_formula = B_no_dif->GetFormula()->GetExpFormula("P");
     C_no_dif_formula = C_no_dif->GetFormula()->GetExpFormula("P");
     L_no_dif_formula = L_no_dif->GetFormula()->GetExpFormula("P");
     CL_no_dif_formula = CL_no_dif->GetFormula()->GetExpFormula("P");
+    newCL_no_dif_formula = C_no_dif_formula + L_no_dif_formula;
 
 /******************************************************
 //------------------------------------------------------Using TLinearFitter-------------------------------------------------------------------------
  
 //   TCanvas * test = new TCanvas("Testing Fitters");
-    TF1 *B_copy = new TF1("B_copy",Bformula,0.,6.5);
+    TF1 *B_copy = new TF1("B_copy",Bformula,0.,3.5);
 //    B_copy->Draw();
 
-    TF1 *C_copy = new TF1("C_copy",Cformula,0.,6.5);
+    TF1 *C_copy = new TF1("C_copy",Cformula,0.,3.5);
 //    C_copy->Draw("same");
 
-    TF1 *L_copy = new TF1("L_copy",Lformula,0.,6.5);
+    TF1 *L_copy = new TF1("L_copy",Lformula,0.,3.5);
 //    L_copy->Draw("same");
-    TF1 *CL_copy = new TF1("CL_copy",CLformula,0.,6.5);
+    TF1 *CL_copy = new TF1("CL_copy",CLformula,0.,3.5);
 //   CL_copy->Draw("same");
 
 //   TCanvas * test = new TCanvas("Testing Fitters");
-    TF1 *B_no_dif_copy = new TF1("B_no_dif_copy",B_no_dif_formula,0.,6.5);
-    TF1 *C_no_dif_copy = new TF1("C_no_dif_copy",C_no_dif_formula,0.,6.5);
-    TF1 *L_no_dif_copy = new TF1("L_no_dif_copy",L_no_dif_formula,0.,6.5);
-    TF1 *CL_no_dif_copy = new TF1("CL_no_dif_copy",CL_no_dif_formula,0.,6.5);
+    TF1 *B_no_dif_copy = new TF1("B_no_dif_copy",B_no_dif_formula,0.,3.5);
+    TF1 *C_no_dif_copy = new TF1("C_no_dif_copy",C_no_dif_formula,0.,3.5);
+    TF1 *L_no_dif_copy = new TF1("L_no_dif_copy",L_no_dif_formula,0.,3.5);
+    TF1 *CL_no_dif_copy = new TF1("CL_no_dif_copy",CL_no_dif_formula,0.,3.5);
 
 
  //TLinearFitter *fit = new TLinearFitter();
 //Three component TLinearFitter initialization:
-   TF1 *ffitter_3 = new TF1("ffitter_3","B_copy++C_copy++L_copy",0.,6.5);
+   TF1 *ffitter_3 = new TF1("ffitter_3","B_copy++C_copy++L_copy",0.,3.5);
         ffitter_3->SetParNames("f_b(fit)","f_c(fit)","f_l(fit)");
 
   ffitter_3->SetLineStyle(2);
@@ -337,7 +372,7 @@ void data_fit(){
 
 
 //Two component TLinearFitter initialization:
-   TF1 *ffitter_2 = new TF1("ffitter_2","B_copy++CL_copy",0.,6.5);
+   TF1 *ffitter_2 = new TF1("ffitter_2","B_copy++CL_copy",0.,3.5);
         ffitter_2->SetParNames("f_b(fit)","f_c(fit)");
 
   ffitter_2->SetLineStyle(2);
@@ -345,7 +380,7 @@ void data_fit(){
 
 *************************************************************/
     
-        TFile *data_file = new TFile("../../samples/BParking18_data/data_output.root","read");
+        TFile *data_file = new TFile("../../samples/BParking18_data/data_output_plots_pTjet10.root","read");
         TH1F * Hdata_pt_rel = (TH1F*)data_file->Get("Hdata_pt_rel");
         TH1F * Hdata_pt_rel_no_dif = (TH1F*)data_file->Get("Hdata_pt_rel_no_dif");
         Hdata_pt_rel->SetLineColor(kBlack);
@@ -359,16 +394,18 @@ void data_fit(){
 
 
         Hdata_pt_rel->Sumw2();
-        Hdata_pt_rel->GetXaxis()->SetRangeUser(0.,6.5);
+        Hdata_pt_rel->GetXaxis()->SetRangeUser(0.,3.5);
         Hdata_pt_rel->SetTitle("");
         Hdata_pt_rel->Scale(1/Hdata_pt_rel->Integral("width"));
 
         Hdata_pt_rel_no_dif->Sumw2();
-        Hdata_pt_rel_no_dif->GetXaxis()->SetRangeUser(0.,6.5);
+        Hdata_pt_rel_no_dif->GetXaxis()->SetRangeUser(0.,3.5);
         Hdata_pt_rel_no_dif->SetTitle("");
-        Hdata_pt_rel_no_dif->GetYaxis()->SetTitle("#frac{1}{N}#frac{dN}{dt}");
+        Hdata_pt_rel_no_dif->SetName("p_{T}^{rel}(inc. data)");
+        Hdata_pt_rel_no_dif->GetYaxis()->SetTitle("#frac{1}{N}#frac{dN}{dp_{T}^{rel}}");
         Hdata_pt_rel_no_dif->GetYaxis()->SetTitleSize(0.04);
-        Hdata_pt_rel_no_dif->GetYaxis()->SetTitleOffset(0.3);
+        Hdata_pt_rel_no_dif->GetYaxis()->SetTitleFont(42);
+        Hdata_pt_rel_no_dif->GetYaxis()->SetTitleOffset(0.6);
         Hdata_pt_rel_no_dif->Scale(1/Hdata_pt_rel_no_dif->Integral("width"));
 
  /*
@@ -380,15 +417,15 @@ void data_fit(){
 
         TString Hdata_pt_rel_entries;
         Hdata_pt_rel_entries.Form("%lf",Hdata_pt_rel->GetEntries()); 
-        TF1 * my_fit = new TF1("my_fit","[0]*"+Bformula+"+("+Hdata_pt_rel_entries+"-[0])*"+CLformula,0.,6.5);
+        TF1 * my_fit = new TF1("my_fit","[0]*"+Bformula+"+("+Hdata_pt_rel_entries+"-[0])*"+CLformula,0.,3.5);
         my_fit->SetLineColor(kViolet);
         my_fit->SetLineWidth(3);
         my_fit->SetParName(0,"n_b(fit)");
 
- //       TF1 * my_fit = new TF1("my_fit","[0]*"+Bformula+"+(1-[0])*"+CLformula,0.,6.5);//for bpurity fit parameters
+ //       TF1 * my_fit = new TF1("my_fit","[0]*"+Bformula+"+(1-[0])*"+CLformula,0.,3.5);//for bpurity fit parameters
 
 
-        TF1 * my_fit2 = new TF1("my_fit2","[0]*"+Bformula+"+[1]*"+Cformula+"+[2]*"+Lformula,0.,6.5);
+        TF1 * my_fit2 = new TF1("my_fit2","[0]*"+Bformula+"+[1]*"+Cformula+"+[2]*"+Lformula,0.,3.5);
         my_fit->SetParameter(0,0.9);
         my_fit2->SetParLimits(0,0.,1.);
 //for(int ibin=0;ibin<Hdata_pt_rel->GetSize();++ibin) Hdata_pt_rel->SetBinError(ibin,10000);
@@ -396,12 +433,12 @@ void data_fit(){
      //drawing the subcomponents of the fit.
         TString fit_par_0;
         fit_par_0.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParameter(0));
-        TF1 * B_fit_component = new TF1("B_fit_component",fit_par_0+"*"+Bformula,0.,6.5);
+        TF1 * B_fit_component = new TF1("B_fit_component",fit_par_0+"*"+Bformula,0.,3.5);
         B_fit_component->SetTitle("b#rightarrow#mu+X: B(p_{T}^{rel}) component");
         B_fit_component->SetLineColor(kBlue);
         B_fit_component->SetLineStyle(2);
         B_fit_component->SetLineWidth(2);
-        TF1 * CL_fit_component = new TF1("CL_fit_component","("+Hdata_pt_rel_entries+"-"+fit_par_0+")*"+CLformula,0.,6.5);
+        TF1 * CL_fit_component = new TF1("CL_fit_component","("+Hdata_pt_rel_entries+"-"+fit_par_0+")*"+CLformula,0.,3.5);
         CL_fit_component->SetTitle("udsc#rightarrow#mu+X': CL(p_{T}^{rel}) component");
         CL_fit_component->SetLineColor(kRed);
         CL_fit_component->SetLineStyle(2);
@@ -420,37 +457,40 @@ bPurity_err.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParError(0)/Hdata
 
 
                   */
-    
 //NO_DIF:
-        TF1 * my_fit_no_dif = new TF1("my_fit_no_dif","[0]*"+B_no_dif_formula+"+(1-[0])*"+CL_no_dif_formula,0.,6.5);
+
+        //gStyle->SetOptFit(1);
+   
+        TF1 * my_fit_no_dif = new TF1("my_fit_no_dif","[0]*"+B_no_dif_formula+"+(1-[0])*"+CL_no_dif_formula,0.,3.5);
         my_fit_no_dif->SetLineColor(kViolet);
         my_fit_no_dif->SetLineWidth(3);
         my_fit_no_dif->SetParName(0,"f_b");
         
-        TF1 * my_3fit_no_dif = new TF1("my_3fit_no_dif","[0]*"+B_no_dif_formula+"+[1]*"+C_no_dif_formula+"+[2]*"+L_no_dif_formula,0.,6.5);
+        TF1 * my_3fit_no_dif = new TF1("my_3fit_no_dif","[0]*"+B_no_dif_formula+"+[1]*"+C_no_dif_formula+"+[2]*"+L_no_dif_formula,0.,3.5);
         my_3fit_no_dif->SetLineColor(kViolet);
         my_3fit_no_dif->SetLineWidth(3);
         my_3fit_no_dif->SetParName(0,"f_b");
         my_3fit_no_dif->SetParName(1,"f_c");
-        my_3fit_no_dif->SetParameter(0,0.8);
+        my_3fit_no_dif->SetParName(2,"f_q");
+        my_3fit_no_dif->SetParameter(0,0.7);
         my_3fit_no_dif->SetParLimits(0,0.,1.);
         my_3fit_no_dif->SetParLimits(1,0.,1.);
         my_3fit_no_dif->SetParLimits(2,0.,1.);
-        //my_3fit_no_dif->SetParLimits(1,0,1-my_3fit_no_dif->GetParameter(0));
 
         TCanvas * data_fit_pt_rel_no_dif = new TCanvas("data fit pt_rel_no_dif");
-        data_fit_pt_rel_no_dif->Divide(1,2);
-        data_fit_pt_rel_no_dif->cd(1);
 
-
-        
+	    data_fit_pt_rel_no_dif->cd()->SetTickx();
+	    data_fit_pt_rel_no_dif->cd()->SetTicky();
+        Hdata_pt_rel_no_dif->GetYaxis()->CenterTitle(1);
+        Hdata_pt_rel_no_dif->GetYaxis()->SetTitleSize(0.06);
         Hdata_pt_rel_no_dif->Fit(my_fit_no_dif);
-        TF1 * B_no_dif_fit_component = new TF1("B_no_dif_fit_component",std::to_string(my_fit_no_dif->GetParameter(0))+"*"+B_no_dif_formula,0.,6.5);
+    
+        TF1 * B_no_dif_fit_component = new TF1("B_no_dif_fit_component",std::to_string(my_fit_no_dif->GetParameter(0))+"*"+B_no_dif_formula,0.,3.5);
         B_no_dif_fit_component->SetTitle("b#rightarrow#mu+X: B(p_{T}^{rel})");
         B_no_dif_fit_component->SetLineColor(kBlue);
         B_no_dif_fit_component->SetLineStyle(2);
         B_no_dif_fit_component->SetLineWidth(2);
-        TF1 * CL_no_dif_fit_component = new TF1("CL_no_dif_fit_component","(1-"+std::to_string(my_fit_no_dif->GetParameter(0))+")*("+C_no_dif_formula+"+"+L_no_dif_formula+")",0.,6.5);
+        TF1 * CL_no_dif_fit_component = new TF1("CL_no_dif_fit_component","(1-"+std::to_string(my_fit_no_dif->GetParameter(0))+")*("+CL_no_dif_formula+")",0.,3.5);
         CL_no_dif_fit_component->SetTitle("udsc#rightarrow#mu+X': CQ(p_{T}^{rel})");
         CL_no_dif_fit_component->SetLineColor(kRed);
         CL_no_dif_fit_component->SetLineStyle(2);
@@ -460,31 +500,35 @@ bPurity_err.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParError(0)/Hdata
         CL_no_dif_fit_component->Draw("same");
         gStyle->SetLegendBorderSize(0);//TLegend with no border!
         
-        data_fit_pt_rel_no_dif->cd(1)->BuildLegend();
+        data_fit_pt_rel_no_dif->cd()->BuildLegend();
 
-       TLatex * cms_logo = new TLatex(0.5,Hdata_pt_rel_no_dif->GetMaximum()*1.095,"CMS");
-       cms_logo->SetTextSize(0.0555);
+       TLatex * cms_logo = new TLatex(Hdata_pt_rel_no_dif->GetXaxis()->GetXmin(),Hdata_pt_rel_no_dif->GetMaximum()*1.095,"CMS");
+       cms_logo->SetTextSize(0.065);
        cms_logo->Draw("same");
 
         //3-Parameter Fit:
 
-        data_fit_pt_rel_no_dif->cd(2);
+        TCanvas * data_3fit_pt_rel_no_dif = new TCanvas("data_3fit_pt_rel_no_dif","data_3fit_pt_rel_no_dif");
+	    data_3fit_pt_rel_no_dif->cd()->SetTickx();
+	    data_3fit_pt_rel_no_dif->cd()->SetTicky();
         TH1F* Hdata_pt_rel_no_dif_clone = (TH1F*) Hdata_pt_rel_no_dif->Clone();
-        Hdata_pt_rel_no_dif_clone -> GetYaxis()->SetRangeUser(-0.2,0.85*Hdata_pt_rel_no_dif->GetYaxis()->GetXmax());
+        Hdata_pt_rel_no_dif_clone -> GetYaxis()->SetRangeUser(-0.01,0.85*Hdata_pt_rel_no_dif->GetYaxis()->GetXmax());
+        Hdata_pt_rel_no_dif_clone->GetYaxis()->CenterTitle(1);
+        Hdata_pt_rel_no_dif_clone->GetYaxis()->SetTitleSize(0.06);
         Hdata_pt_rel_no_dif_clone->Fit(my_3fit_no_dif);
 
-        TF1 * B_no_dif_3fit_component = new TF1("B_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(0))+"*"+B_no_dif_formula,0.,6.5);
+        TF1 * B_no_dif_3fit_component = new TF1("B_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(0))+"*"+B_no_dif_formula,0.,3.5);
         B_no_dif_3fit_component->SetTitle("b#rightarrow#mu+X: B(p_{T}^{rel})");
         B_no_dif_3fit_component->SetLineColor(kBlue);
         B_no_dif_3fit_component->SetLineStyle(2);
         B_no_dif_3fit_component->SetLineWidth(2);
-        TF1 * C_no_dif_3fit_component = new TF1("C_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(1))+"*"+C_no_dif_formula,0.,6.5);
+        TF1 * C_no_dif_3fit_component = new TF1("C_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(1))+"*"+C_no_dif_formula,0.,3.5);
         C_no_dif_3fit_component->SetTitle("c#rightarrow#mu+X': C(p_{T}^{rel})");
         C_no_dif_3fit_component->SetLineColor(kRed);
         C_no_dif_3fit_component->SetLineStyle(2);
         C_no_dif_3fit_component->SetLineWidth(2);
-        //TF1 * L_no_dif_3fit_component = new TF1("L_no_dif_3fit_component","(1-"+std::to_string(my_3fit_no_dif->GetParameter(0))+"-"+std::to_string(my_3fit_no_dif->GetParameter(1))+")*"+L_no_dif_formula,0.,6.5);
-        TF1 * L_no_dif_3fit_component = new TF1("L_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(2))+"*"+L_no_dif_formula,0.,6.5);
+        //TF1 * L_no_dif_3fit_component = new TF1("L_no_dif_3fit_component","(1-"+std::to_string(my_3fit_no_dif->GetParameter(0))+"-"+std::to_string(my_3fit_no_dif->GetParameter(1))+")*"+L_no_dif_formula,0.,3.5);
+        TF1 * L_no_dif_3fit_component = new TF1("L_no_dif_3fit_component",std::to_string(my_3fit_no_dif->GetParameter(2))+"*"+L_no_dif_formula,0.,3.5);
         L_no_dif_3fit_component->SetTitle("uds#rightarrow#mu+X': CQ(p_{T}^{rel})");
         L_no_dif_3fit_component->SetLineColor(kGreen);
         L_no_dif_3fit_component->SetLineStyle(2);
@@ -494,7 +538,7 @@ bPurity_err.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParError(0)/Hdata
         C_no_dif_3fit_component->Draw("same");
         L_no_dif_3fit_component->Draw("same");
 
-        data_fit_pt_rel_no_dif->cd(2)->BuildLegend();
+        data_3fit_pt_rel_no_dif->cd()->BuildLegend();
  
         cms_logo->Draw("same");     
 
@@ -511,11 +555,11 @@ bPurity_err.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParError(0)/Hdata
         TString cPurity_no_dif_err(std::to_string(my_fit_no_dif->GetParError(0)));
 
         
-        data_fit_pt_rel_no_dif->cd(1);
-        text_fit_no_dif_1->DrawLatex(2.5,0.5*Hdata_pt_rel_no_dif->GetMaximum(),"bPurity= "+bPurity_no_dif+" #pm "+bPurity_no_dif_err);
-        text_fit_no_dif_2->DrawLatex(2.5,0.4*Hdata_pt_rel_no_dif->GetMaximum(),"cPurity= "+cPurity_no_dif+" #pm "+cPurity_no_dif_err);
+        data_fit_pt_rel_no_dif->cd();
+        text_fit_no_dif_1->DrawLatex(2,0.5*Hdata_pt_rel_no_dif->GetMaximum(),"P_{b}= "+bPurity_no_dif+" #pm "+bPurity_no_dif_err);
+        text_fit_no_dif_2->DrawLatex(2,0.4*Hdata_pt_rel_no_dif->GetMaximum(),"P_{c}= "+cPurity_no_dif+" #pm "+cPurity_no_dif_err);
         
-        data_fit_pt_rel_no_dif->cd(2);
+        data_3fit_pt_rel_no_dif->cd();
         bPurity_no_dif = std::to_string(my_3fit_no_dif->GetParameter(0));
         bPurity_no_dif_err = std::to_string(my_3fit_no_dif->GetParError(0));
         cPurity_no_dif = std::to_string(my_3fit_no_dif->GetParameter(1));
@@ -524,14 +568,100 @@ bPurity_err.Form("%lf",Hdata_pt_rel->GetFunction("my_fit")->GetParError(0)/Hdata
    //     TString udsPurity_no_dif_err(std::to_string(sqrt(my_3fit_no_dif->GetParError(0)*my_3fit_no_dif->GetParError(0)+my_3fit_no_dif->GetParError(1)*my_3fit_no_dif->GetParError(1))));
         TString udsPurity_no_dif(std::to_string(my_3fit_no_dif->GetParameter(2)));
         TString udsPurity_no_dif_err(std::to_string(my_fit_no_dif->GetParError(2)));
-        text_fit_no_dif_1->DrawLatex(2.5,0.5*Hdata_pt_rel_no_dif->GetMaximum(),"bPurity= "+bPurity_no_dif+" #pm "+bPurity_no_dif_err);
-        text_fit_no_dif_2->DrawLatex(2.5,0.4*Hdata_pt_rel_no_dif->GetMaximum(),"cPurity= "+cPurity_no_dif+" #pm "+cPurity_no_dif_err);
-        text_fit_no_dif_3->DrawLatex(2.5,0.3*Hdata_pt_rel_no_dif->GetMaximum(),"udsPurity= "+udsPurity_no_dif+" #pm "+udsPurity_no_dif_err);
+        text_fit_no_dif_1->DrawLatex(2,0.5*Hdata_pt_rel_no_dif->GetMaximum(),"P_{b}= "+bPurity_no_dif+" #pm "+bPurity_no_dif_err);
+        text_fit_no_dif_2->DrawLatex(2,0.4*Hdata_pt_rel_no_dif->GetMaximum(),"P_{c}= "+cPurity_no_dif+" #pm "+cPurity_no_dif_err);
+        text_fit_no_dif_3->DrawLatex(2,0.3*Hdata_pt_rel_no_dif->GetMaximum(),"P_{q}= "+udsPurity_no_dif+" #pm "+udsPurity_no_dif_err);
 
-        TFile * pt_rel_fit_output = new TFile("pt_rel_fit_full_MC.root","recreate");
+
+
+  //21.06.19: data/fit ratio plots:
+  //Using TRatioPlot for fit-data residual did not work well: 
+  // 1) if I cut the range at 3.5 GeV (pT_rel) nan/Inf propagates to pad, because fitting function is null after 3.5, however the Histos are not...even if they are displayed up to 3.5
+  // 2) cannot understand how it computes the residual/error...
+  //Lets make a ratio plot graph from scratch: 1 Canvas, 2 pads with the Histo/fit plot and below the smaller (in vertical size) ratio TGraphError..
+
+        TCanvas* ratio_data_2fit_canvas = new TCanvas("ratio_data_2fit_canvas","ratio_data_2fit_canvas");
+	gStyle->SetFillStyle(0);
+        ratio_data_2fit_canvas->Divide(1,2);
+	ratio_data_2fit_canvas->cd(1);
+	data_fit_pt_rel_no_dif->DrawClonePad();
+
+        
+	int nRatioBins = Hdata_pt_rel_no_dif->FindBin(3.5);
+	float ratio_value[nRatioBins], ratio_error[nRatioBins], x_axis_value[nRatioBins], x_axis_width[nRatioBins];
+	
+        for(int ibin=1;ibin<=nRatioBins;++ibin){
+        	float fit_value = Hdata_pt_rel_no_dif->GetFunction("my_fit_no_dif")->Eval(Hdata_pt_rel_no_dif->GetBinCenter(ibin));
+        	float data_value = Hdata_pt_rel_no_dif->GetBinContent(ibin);
+        	float data_error = Hdata_pt_rel_no_dif->GetBinError(ibin);
+                ratio_value[ibin-1] = data_value/fit_value; 
+        	ratio_error[ibin-1] = data_error/fit_value;          
+		x_axis_value[ibin-1] = Hdata_pt_rel_no_dif->GetBinCenter(ibin);
+		x_axis_width[ibin-1] = 0.5*Hdata_pt_rel_no_dif->GetBinWidth(ibin);
+  	                                            }
+
+	ratio_data_2fit_canvas->cd(2);
+    TGraphErrors* ratio_2plot = new TGraphErrors(nRatioBins,x_axis_value,ratio_value,x_axis_width,ratio_error);
+	ratio_2plot->SetMarkerStyle(20);
+    ratio_2plot->SetTitle("");
+	ratio_2plot->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+	ratio_2plot->GetYaxis()->SetTitle("#frac{Data}{Fit}");
+	ratio_2plot->GetYaxis()->CenterTitle(1);
+	ratio_2plot->GetYaxis()->SetTitleSize(0.07);
+	ratio_2plot->GetXaxis()->SetTitleSize(0.05);
+	ratio_2plot->GetYaxis()->SetTitleOffset(0.5);
+	ratio_2plot->GetYaxis()->SetRangeUser(0.9,1.1);
+	ratio_2plot->GetXaxis()->SetRangeUser(0,3.5);
+        ratio_data_2fit_canvas->cd(2);
+	ratio_data_2fit_canvas->cd(2)->SetTickx();
+	ratio_data_2fit_canvas->cd(2)->SetTicky();
+	ratio_data_2fit_canvas->cd(2)->SetGridx();
+	ratio_data_2fit_canvas->cd(2)->SetGridy();
+	ratio_2plot->Draw("APZ");
+        
+
+
+        TCanvas* ratio_data_3fit_canvas = new TCanvas("ratio_data_3fit_canvas","ratio_data_3fit_canvas");
+        ratio_data_3fit_canvas->Divide(1,2);
+	ratio_data_3fit_canvas->cd(1);
+        data_3fit_pt_rel_no_dif->DrawClonePad(); //draws the whole canvas with the 2 pads on the new upper pad.
+        for(int ibin=1;ibin<=nRatioBins;++ibin){
+        	float fit_value = Hdata_pt_rel_no_dif_clone->GetFunction("my_3fit_no_dif")->Eval(Hdata_pt_rel_no_dif_clone->GetBinCenter(ibin));
+        	float data_value = Hdata_pt_rel_no_dif_clone->GetBinContent(ibin);
+        	float data_error = Hdata_pt_rel_no_dif_clone->GetBinError(ibin);
+                ratio_value[ibin-1] = data_value/fit_value; 
+        	ratio_error[ibin-1] = data_error/fit_value;          
+		x_axis_value[ibin-1] = Hdata_pt_rel_no_dif_clone->GetBinCenter(ibin);
+		x_axis_width[ibin-1] = 0.5*Hdata_pt_rel_no_dif_clone->GetBinWidth(ibin);
+  	                                            }
+
+    ratio_data_3fit_canvas->cd(2);
+    TGraphErrors* ratio_3plot = new TGraphErrors(nRatioBins,x_axis_value,ratio_value,x_axis_width,ratio_error);
+	ratio_3plot->SetMarkerStyle(20);
+        ratio_3plot->SetTitle("");
+	ratio_3plot->GetXaxis()->SetTitle("p_{T}^{rel} [GeV]");
+	//ratio_3plot->GetXaxis()->SetRangeUser(0.,x_axis_value[nRatioBins-1]+x_axis_width[nRatioBins-1]);
+	ratio_3plot->GetYaxis()->SetTitle("#frac{Data}{Fit}");
+	ratio_3plot->GetYaxis()->CenterTitle(1);
+	ratio_3plot->GetYaxis()->SetTitleSize(0.07);
+	ratio_3plot->GetXaxis()->SetTitleSize(0.05);
+	ratio_3plot->GetYaxis()->SetTitleOffset(0.5);
+	ratio_3plot->GetYaxis()->SetRangeUser(0.9,1.1);
+	ratio_3plot->GetXaxis()->SetRangeUser(0,3.5);
+        ratio_data_3fit_canvas->cd(2);
+	ratio_data_3fit_canvas->cd(2)->SetTickx();
+	ratio_data_3fit_canvas->cd(2)->SetTicky();
+	ratio_data_3fit_canvas->cd(2)->SetGridx();
+	ratio_data_3fit_canvas->cd(2)->SetGridy();
+	ratio_3plot->Draw("APZ");
+        
+	
+	TFile * pt_rel_fit_output = new TFile("pt_rel_fit_full_MC.root","recreate");
         input_parametrization_canvas->Write();
         //data_fit_pt_rel->Write();
         data_fit_pt_rel_no_dif->Write();
+
+
 
 //        my_fit2->SetParameter(0,0.82);
 //        Hdata_pt_rel_no_dif->Fit(ffitter_2);
