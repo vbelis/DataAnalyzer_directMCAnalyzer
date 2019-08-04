@@ -1,9 +1,3 @@
-//////////////////////////////////////////////////////////
-// This class has been automatically generated on
-// Sun Jul 15 22:24:47 2018 by ROOT version 6.10/09
-// from TTree mytree/mytree
-// found on file: /eos/cms/store/group/cmst3/user/gkaratha/Parking_2018A_8_BKmumu_part1/ParkingBPH1/crab_Parking_2018A_8_BKmumu_part1/180715_132305/0000/output_9.root
-//////////////////////////////////////////////////////////
 
 #ifndef tree_class_h
 #define tree_class_h
@@ -25,7 +19,6 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
-
    // Declaration of leaf types
    Int_t           event;
    Int_t           run_number;
